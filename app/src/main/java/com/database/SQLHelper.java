@@ -26,18 +26,24 @@ public class SQLHelper extends SQLiteOpenHelper
 	public static final String COLUMN_STARTTIME = "start_time";
 	public static final String COLUMN_ENDTIME = "end_time";
 	public static final String COLUMN_DURATION = "duration";
+	public static final String COLUMN_DAY = "day";
+	public static final String COLUMN_MONTH = "month";
+	public static final String COLUMN_YEAR = "year";
 	public final static String[] EVENT_COLUMNS = {	COLUMN_EVENTID, COLUMN_CALENDARID, COLUMN_OWNER, 
 													COLUMN_TITLE, COLUMN_LOCATION, COLUMN_DATE, 
-													COLUMN_STARTTIME, COLUMN_ENDTIME,COLUMN_DURATION};
+													COLUMN_STARTTIME, COLUMN_ENDTIME,COLUMN_DURATION,
+													COLUMN_DAY, COLUMN_MONTH, COLUMN_YEAR };
 
 	// Database creation sql statements
 	private final String CREATE_CALENDAR_TABLE = "create table " + TABLE_CALENDAR + "(" + CALENDAR_COLUMNS[0]
 			+ " integer primary key autoincrement, " + CALENDAR_COLUMNS[1] + " text not null);";
 
-	private final String CREATE_EVENT_TABLE = "create table " + TABLE_EVENT + "(" + EVENT_COLUMNS[0]
-			+ " integer primary key autoincrement, " + EVENT_COLUMNS[1] + " integer, " + EVENT_COLUMNS[2] + " text not null, "
-			+ EVENT_COLUMNS[3] + " text, " + EVENT_COLUMNS[4] + " text, " + EVENT_COLUMNS[5] + " text, " + EVENT_COLUMNS[6] + " text, "
-			+ EVENT_COLUMNS[7] + " text, " + EVENT_COLUMNS[8] + " text);";
+	private final String CREATE_EVENT_TABLE = "create table " + TABLE_EVENT + "(" + COLUMN_EVENTID
+			+ " integer primary key autoincrement, " + COLUMN_CALENDARID + " integer, "+
+			COLUMN_OWNER + " text not null, " + COLUMN_TITLE + " text not null, " +
+			COLUMN_LOCATION + " text, " + COLUMN_DATE + " text, " + COLUMN_STARTTIME + " text, " +
+			COLUMN_ENDTIME + " text, " + COLUMN_DURATION + " text, " + COLUMN_DAY + " integer, " +
+			COLUMN_MONTH + " integer, " + COLUMN_YEAR + " integer);";
 
 	public SQLHelper(Context context)
 	{

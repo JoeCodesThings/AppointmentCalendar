@@ -1,23 +1,43 @@
 package com.calendar;
 import android.database.Cursor;
 
+import java.util.Arrays;
+
 public class Calendar {
 
+	private Event[] events;
 	private long calendarID;
 	private String owner;
 	
 	public Calendar()
 	{
 		calendarID = -1;
+		events = new Event[100000];
+		Arrays.fill(events, null);
 	}
-	
+
 	/*Constructor that takes a cursor filled with event information*/
 	public Calendar(Cursor c)
 	{
 		this.calendarID = c.getLong(c.getColumnIndexOrThrow("_calendarID"));
 		this.owner = c.getString(c.getColumnIndexOrThrow("owner"));
 	}
-
+	public boolean addEvent(Event newEvent)
+	{
+		for(int i = 0; i < 100000; ++i)
+		{
+			if(events[i] != null)
+			{
+				events[i] = newEvent;
+				return true;
+			}
+		}
+		return false;
+	}
+	public Event getEvent(long eventID)
+	{
+		return new Event();
+	}
 	/**
 	 * @return the calendarID
 	 */

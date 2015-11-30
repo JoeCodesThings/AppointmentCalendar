@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.CalendarContract;
 import android.util.Log;
 
 import com.calendar.Calendar;
@@ -77,11 +78,26 @@ public class DatabaseAdapter
 		values.put(SQLHelper.EVENT_COLUMNS[6], newEvent.getStartTime());
 		values.put(SQLHelper.EVENT_COLUMNS[7], newEvent.getEndTime());
 		values.put(SQLHelper.EVENT_COLUMNS[8], newEvent.getDuration());
+		values.put(SQLHelper.EVENT_COLUMNS[9], newEvent.getDay());
+		values.put(SQLHelper.EVENT_COLUMNS[10], newEvent.getMonth());
+		values.put(SQLHelper.EVENT_COLUMNS[11], newEvent.getYear());
 
 		database.insertWithOnConflict(dbHelper.getEventTable(), null, values, SQLiteDatabase.CONFLICT_REPLACE);
 		Log.i(TAG, "Inserted Event : " + newEvent.getEventID() + " Into Database.");
 	}
-	
+
+	public Cursor getEvents(int day, int month, int year)
+	{
+		Cursor events = database.query(SQLHelper.TABLE_EVENT,
+				new String[]{SQLHelper.COLUMN_DAY,SQLHelper.COLUMN_MONTH,SQLHelper.COLUMN_YEAR},
+				"day = ? AND month = ? AND year = ?",
+				new String[]{String.valueOf(day),String.valueOf(month),String.valueOf(year)},null,null,null);
+		if(events.moveToFirst())
+			return events;
+		else
+			return null;
+	}
+
 	public Event deleteEvent(Event event)
 	{
 		long id = event.getEventID();
@@ -96,9 +112,8 @@ public class DatabaseAdapter
 		values.put(SQLHelper.CALENDAR_COLUMNS[0], newCalendar.getCalendarID());
 		values.put(SQLHelper.CALENDAR_COLUMNS[1], newCalendar.getOwner());
 
-
-		database.insertWithOnConflict(dbHelper.getEventTable(), null, values, SQLiteDatabase.CONFLICT_REPLACE);
-		Log.i(TAG, "Inserted Event : " + newCalendar.getCalendarID() + " Into Database.");
+		database.insertWithOnConflict(dbHelper.getCalendarTable(), null, values, SQLiteDatabase.CONFLICT_REPLACE);
+		Log.i(TAG, "Inserted Calendar : " + newCalendar.getCalendarID() + " Into Database.");
 	}
 	
 	public Calendar deleteCalendar(Calendar calendar)

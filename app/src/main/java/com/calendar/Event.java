@@ -4,6 +4,9 @@ import android.database.Cursor;
 public class Event {
 	private long eventID;
 	private long calendarID;
+	private int day;
+	private int month;
+	private int year;
 	private String owner;
 	private String title;
 	private String location;
@@ -17,7 +20,19 @@ public class Event {
 		eventID = -1;
 		calendarID = -1;
 	}
-	
+	public Event(long newEventID)
+	{
+		this.eventID = newEventID;
+		calendarID = -1;
+	}
+	public Event(int newDay, int newMonth, int newYear)
+	{
+		eventID = -1;
+		calendarID = -1;
+		this.day = newDay;
+		this.month = newMonth;
+		this.year = newYear;
+	}
 	/*Constructor that takes a cursor filled with event information*/
 	public Event(Cursor c)
 	{
@@ -30,8 +45,34 @@ public class Event {
 		this.startTime = c.getString(c.getColumnIndexOrThrow("startTime"));
 		this.endTime = c.getString(c.getColumnIndexOrThrow("endTime"));
 		this.duration = c.getString(c.getColumnIndexOrThrow("duration"));
+		this.day = c.getInt(c.getColumnIndexOrThrow("day"));
+		this.month = c.getInt(c.getColumnIndexOrThrow("month"));
+		this.year = c.getInt(c.getColumnIndexOrThrow("year"));
 	}
 
+	public int getMonth() {
+		return month;
+	}
+
+	public void setMonth(int month) {
+		this.month = month;
+	}
+
+	public int getDay() {
+		return day;
+	}
+
+	public void setDay(int day) {
+		this.day = day;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
+	}
 	/**
 	 * @return the calendarID
 	 */

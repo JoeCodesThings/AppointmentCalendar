@@ -1,5 +1,6 @@
 package com.calendar;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,35 +9,41 @@ import android.view.ViewGroup;
 
 import com.appointmentcalendar.R;
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public class CalendarAdapter extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "1";
+import java.util.Arrays;
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static CalendarAdapter newInstance(int sectionNumber) {
-        	CalendarAdapter fragment = new CalendarAdapter();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
+public class CalendarAdapter {
 
-        public CalendarAdapter() {
-        }
+    private Calendar[] calendars;
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.month_view, container, false);
-            return rootView;
-        }
+    public CalendarAdapter()
+    {
+        calendars = new Calendar[100];
+        Arrays.fill(calendars, null);
     }
+    public Calendar getCalendar(int calendarID)
+    {
+        for(int i = 0; i < 100; ++i)
+        {
+            if(calendars[i].getCalendarID() == calendarID)
+            {
+                return calendars[i];
+            }
+        }
+        return null;
+    }
+
+    public boolean setCalendar(Calendar newCalendar)
+    {
+        if(calendars[(int)newCalendar.getCalendarID()] == null)
+        {
+            calendars[(int)newCalendar.getCalendarID()] = newCalendar;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean syncCalendars(int calendarID)
+    {
+        return true;
+    }
+}

@@ -26,7 +26,7 @@ public class Calendar {
 	{
 		for(int i = 0; i < 100000; ++i)
 		{
-			if(events[i] != null)
+			if(events[i] == null)
 			{
 				events[i] = newEvent;
 				return true;
@@ -36,7 +36,29 @@ public class Calendar {
 	}
 	public Event getEvent(long eventID)
 	{
-		return new Event();
+		for(int i = 0; i < 100000; ++i)
+		{
+			if(events[i].getEventID() == eventID)
+			{
+				return events[i];
+			}
+		}
+		return new Event(-1);
+	}
+
+	public Event getEvent(int day, int month, int year)
+	{
+		for(int i = 0; i < 100000; ++i)
+		{
+			if(events[i] != null)
+			{
+				if(events[i].getDay() == day && events[i].getMonth() == month && events[i].getYear() == year)
+				{
+					return events[i];
+				}
+			}
+		}
+		return new Event(-1);
 	}
 	/**
 	 * @return the calendarID

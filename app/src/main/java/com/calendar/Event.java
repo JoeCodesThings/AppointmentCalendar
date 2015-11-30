@@ -14,7 +14,25 @@ public class Event {
 	private String startTime;
 	private String endTime;
 	private String duration;
-	
+
+	@Override
+	public String toString() {
+		return "Event{" +
+				"eventID=" + eventID +
+				", calendarID=" + calendarID +
+				", day=" + day +
+				", month=" + month +
+				", year=" + year +
+				", owner='" + owner + '\'' +
+				", title='" + title + '\'' +
+				", location='" + location + '\'' +
+				", date='" + date + '\'' +
+				", startTime='" + startTime + '\'' +
+				", endTime='" + endTime + '\'' +
+				", duration='" + duration + '\'' +
+				'}';
+	}
+
 	public Event()
 	{
 		eventID = -1;
@@ -36,7 +54,7 @@ public class Event {
 	/*Constructor that takes a cursor filled with event information*/
 	public Event(Cursor c)
 	{
-		this.eventID = c.getLong(c.getColumnIndexOrThrow("_eventID"));
+		this.eventID = c.getInt(c.getColumnIndexOrThrow("_eventID"));
 		this.calendarID = c.getLong(c.getColumnIndexOrThrow("_calendarID"));
 		this.owner = c.getString(c.getColumnIndexOrThrow("owner"));
 		this.title = c.getString(c.getColumnIndexOrThrow("title"));
@@ -192,14 +210,4 @@ public class Event {
 		return eventID;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "Event [eventID=" + eventID + ", calendarID=" + calendarID
-				+ ", owner=" + owner + ", title=" + title + ", location="
-				+ location + ", date=" + date + ", startTime=" + startTime
-				+ ", endTime=" + endTime + ", duration=" + duration + "]";
-	}
 }

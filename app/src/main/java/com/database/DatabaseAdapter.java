@@ -88,10 +88,7 @@ public class DatabaseAdapter
 
 	public Cursor getEvents(int day, int month, int year)
 	{
-		Cursor events = database.query(SQLHelper.TABLE_EVENT,
-				new String[]{SQLHelper.COLUMN_DAY,SQLHelper.COLUMN_MONTH,SQLHelper.COLUMN_YEAR},
-				"day = ? AND month = ? AND year = ?",
-				new String[]{String.valueOf(day),String.valueOf(month),String.valueOf(year)},null,null,null);
+		Cursor events = database.query(SQLHelper.TABLE_EVENT,	null," ( day = " + String.valueOf(day) + " AND month =  " + String.valueOf(month) + " AND year = "  + String.valueOf(year) + " )",null,null,null,null);
 		if(events.moveToFirst())
 			return events;
 		else

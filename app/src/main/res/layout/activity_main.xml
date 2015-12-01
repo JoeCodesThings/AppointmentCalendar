@@ -1,35 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/grey"
-    android:orientation="vertical" >
+    android:baselineAligned="false"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/FragmentContainer1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="0px"
+        android:layout_weight=".55"
+        android:layout_gravity="center|top">
 
         <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:name="com.appointmentcalendar.CalendarFragment"
             android:id="@+id/fragment2"
-            android:layout_gravity="center_horizontal" />
-    </RelativeLayout>
+            android:layout_gravity="center_horizontal"
+            tools:layout="@layout/calendar_fragment" />
+    </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/FragmentContainer2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="0px"
+        android:layout_weight=".45"
+        android:orientation="vertical"
+        android:layout_gravity="center|bottom">
 
         <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:name="com.appointmentcalendar.EventFragment"
             android:id="@+id/fragment"
-            android:layout_gravity="center_horizontal" />
-    </RelativeLayout>
+            android:layout_gravity="center_horizontal"
+            tools:layout="@layout/event_fragment" />
+    </LinearLayout>
 
 </LinearLayout>
 

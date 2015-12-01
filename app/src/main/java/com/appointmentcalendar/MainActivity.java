@@ -1,5 +1,7 @@
 package com.appointmentcalendar;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -8,6 +10,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CalendarView;
+import android.widget.ExpandableListView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.calendar.Calendar;
@@ -15,12 +20,19 @@ import com.calendar.CalendarAdapter;
 import com.calendar.Event;
 import com.database.DatabaseAdapter;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 import static android.widget.Toast.*;
 
-public class MainActivity extends ActionBarActivity implements CalendarFragment.CalendarFragmentListener, EventFragment.EventFragmentListener {
+public class MainActivity extends ActionBarActivity implements Serializable, CalendarFragment.CalendarFragmentListener, EventFragment.EventFragmentListener {
 
     DatabaseAdapter dbAdapter;
     CalendarAdapter calAdapter = new CalendarAdapter();
+    RelativeLayout calendarFragContainer;
+    RelativeLayout eventFragContainer;
+    ExpandableListView eventListView;
+    ArrayList<Event> eventListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +41,13 @@ public class MainActivity extends ActionBarActivity implements CalendarFragment.
         //sets the main layout of the activity
         setContentView(R.layout.activity_main);
 
+        calendarFragContainer = (RelativeLayout)findViewById(R.id.FragmentContainer1);
+        eventFragContainer = (RelativeLayout)findViewById(R.id.FragmentContainer2);
+        eventListView = (ExpandableListView)findViewById(R.id.eventListView);
         dbAdapter = new DatabaseAdapter(getApplicationContext());
-        initializeCalendarAndDatabase();
+        eventListAdapter = new ArrayList<Event>();
 
+        setTestData();
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int position,long id)
@@ -39,24 +55,30 @@ public class MainActivity extends ActionBarActivity implements CalendarFragment.
         makeText(getApplicationContext(), "Item: " + position, LENGTH_SHORT).show();
     }
 
+
     public void onSelectedDayChange(CalendarView view, int year, int month, int day)
     {
         //getEvents(day,(month+1),year);
         Calendar cal = calAdapter.getCalendar(0);
         Event event;
         //c.moveToFirst();
-
         event = cal.getEvent(day, month+1, year);
         if (event.getEventID() == -1)
         {
             makeText(getApplicationContext(), "NO EVENTS FOUND", LENGTH_SHORT).show();
         }
-        else {
-            makeText(getApplicationContext(), event.getTitle(), LENGTH_SHORT).show();
+        else
+        {
+            makeText(getApplicationContext(), "FOUND EVENT # " + event.getEventID(), LENGTH_SHORT).show();
+            eventListAdapter.add(event);
+            getIntent().putExtra("complexObject", eventListAdapter);
+            FragmentManager fragmentManager = getFragmentManager();
+            Fragment f1 = new Fragment();
+            fragmentManager.beginTransaction().replace(R.id.FragmentContainer2, f1).commit();
         }
     }
 
-    public void initializeCalendarAndDatabase(){
+    public void setTestData(){
         dbAdapter.open();
 
         Calendar ourCalendar = new Calendar();

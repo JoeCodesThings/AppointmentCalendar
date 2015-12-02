@@ -11,12 +11,14 @@
         android:layout_width="wrap_content"
         android:layout_height="0px"
         android:layout_weight=".55"
+        android:orientation="vertical"
         android:layout_gravity="center|top">
 
         <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:name="com.appointmentcalendar.CalendarFragment"
+            android:tag="calendar_frag_tag"
             android:id="@+id/fragment2"
             android:layout_gravity="center_horizontal"
             tools:layout="@layout/calendar_fragment" />
@@ -30,13 +32,6 @@
         android:orientation="vertical"
         android:layout_gravity="center|bottom">
 
-        <fragment
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:name="com.appointmentcalendar.EventFragment"
-            android:id="@+id/fragment"
-            android:layout_gravity="center_horizontal"
-            tools:layout="@layout/event_fragment" />
     </LinearLayout>
 
 </LinearLayout>

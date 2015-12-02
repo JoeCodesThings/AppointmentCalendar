@@ -1,36 +1,33 @@
 package com.appointmentcalendar;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
-
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.CalendarView;
-import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-
 import com.calendar.Calendar;
 import com.calendar.CalendarAdapter;
 import com.calendar.Event;
 import com.database.DatabaseAdapter;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import static android.widget.Toast.*;
 
-public class MainActivity extends ActionBarActivity implements Serializable, CalendarFragment.CalendarFragmentListener, EventFragment.EventFragmentListener {
+public class MainActivity extends ActionBarActivity implements Serializable, CalendarFragment.CalendarFragmentListener, EventFragment.EventFragmentListener, EventDetailsFragment.EventDetailsFragmentListener {
 
     CalendarView calendarFragmentView;
     DatabaseAdapter dbAdapter;
-    CalendarAdapter calAdapter = new CalendarAdapter();
+    CalendarAdapter calAdapter;
     LinearLayout calendarFragContainer;
     LinearLayout eventFragContainer;
-    ListView eventListView;
-    ArrayList<Event> eventListAdapter;
+
+    FragmentManager fm;
+    FragmentTransaction ft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +37,15 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
         setContentView(R.layout.activity_main);
 
         calendarFragmentView = (CalendarView)findViewById(R.id.calendar);
-        calendarFragContainer = (LinearLayout)findViewById(R.id.FragmentContainer1);
-        eventFragContainer = (LinearLayout)findViewById(R.id.FragmentContainer2);
-        eventListView = (ListView)findViewById(R.id.eventListView);
-        dbAdapter = new DatabaseAdapter(getApplicationContext());
-        eventListAdapter = new ArrayList<Event>();
 
-        initializeCalendarView();
+        calendarFragContainer = (LinearLayout)findViewById(R.id.FragmentContainer1);
+        calendarFragContainer.setId(R.id.FragmentContainer1);
+
+        eventFragContainer = (LinearLayout)findViewById(R.id.FragmentContainer2);
+        eventFragContainer.setId(R.id.FragmentContainer2);
+
+        calAdapter = new CalendarAdapter();
+        dbAdapter = new DatabaseAdapter(getApplicationContext());
         setTestData();
     }
 
@@ -58,32 +57,37 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
 
     public void onSelectedDayChange(CalendarView view, int year, int month, int day)
     {
-        //getEvents(day,(month+1),year);
         Calendar cal = calAdapter.getCalendar(0);
-        Event event;
-        //c.moveToFirst();
-        event = cal.getEvent(day, month+1, year);
-        if (event.getEventID() == -1)
+        ArrayList<Event> dailyEvents = cal.getEvents(day, month + 1, year);
+
+        if (dailyEvents.size() == 0)
         {
             makeText(getApplicationContext(), "NO EVENTS FOUND", LENGTH_SHORT).show();
         }
         else
         {
-            makeText(getApplicationContext(), "FOUND EVENT # " + event.getEventID(), LENGTH_SHORT).show();
-            eventListAdapter.add(event);
-            getIntent().putExtra("complexObject", eventListAdapter);
-            FragmentManager fragmentManager = getFragmentManager();
-            CalendarFragment f1 = new CalendarFragment();
-            //f1.setArguments();
-            //fragmentManager.beginTransaction().replace(R.id.FragmentContainer2, f1).commit();
+            makeText(getApplicationContext(), dailyEvents.size() + "EVENTS FOUND", LENGTH_SHORT).show();
+            setSecondFragment(dailyEvents);
         }
     }
 
-    /*Sets the properties for our calendar*/
-    private void initializeCalendarView()
-    {
-        calendarFragmentView.setSelectedWeekBackgroundColor(getResources().getColor(R.color.blue));
+    private void setSecondFragment(ArrayList<Event> dailyList) {
+        fm = getSupportFragmentManager();
+        ft = fm.beginTransaction();
+        Fragment frag = EventFragment.newInstance(dailyList);
+        if (fm.findFragmentByTag("EVENT_FRAG_TAG") == null)
+        {
+            ft.add(eventFragContainer.getId(), frag, "EVENT_FRAG_TAG").commit();
+        }
+        else
+        {
+            ft.addToBackStack("EVENT_FRAG_TAG");
+            ft.replace(eventFragContainer.getId(), frag, "EVENT_FRAG_TAG").commit();
+        }
+
+        fm.executePendingTransactions();
     }
+
     public void setTestData(){
         dbAdapter.open();
 
@@ -92,7 +96,7 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
         ourCalendar.setOwner("Mark");
         Event today;
 
-        for(int i = 1; i < 32; ++i)
+        for(int i = 1; i < 30; ++i)
         {
             today = new Event(i);
             today.setDay(i);

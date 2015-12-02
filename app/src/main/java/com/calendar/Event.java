@@ -1,7 +1,9 @@
 package com.calendar;
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Event {
+public class Event implements Parcelable{
 	private long eventID;
 	private long calendarID;
 	private int day;
@@ -14,24 +16,6 @@ public class Event {
 	private String startTime;
 	private String endTime;
 	private String duration;
-
-	@Override
-	public String toString() {
-		return "Event{" +
-				"eventID=" + eventID +
-				", calendarID=" + calendarID +
-				", day=" + day +
-				", month=" + month +
-				", year=" + year +
-				", owner='" + owner + '\'' +
-				", title='" + title + '\'' +
-				", location='" + location + '\'' +
-				", date='" + date + '\'' +
-				", startTime='" + startTime + '\'' +
-				", endTime='" + endTime + '\'' +
-				", duration='" + duration + '\'' +
-				'}';
-	}
 
 	public Event()
 	{
@@ -68,7 +52,79 @@ public class Event {
 		this.year = c.getInt(c.getColumnIndexOrThrow("year"));
 	}
 
-	public int getMonth() {
+    public Event(Parcel in) {
+
+        this.eventID = in.readLong();
+        this.calendarID = in.readLong();
+        this.day = in.readInt();
+        this.month = in.readInt();
+        this.year = in.readInt();
+        this.owner = in.readString();
+        this.title = in.readString();
+        this.location = in.readString();
+        this.date = in.readString();
+        this.startTime = in.readString();
+        this.endTime = in.readString();
+        this.duration = in.readString();
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(eventID);
+        dest.writeLong(calendarID);
+        dest.writeInt(day);
+        dest.writeInt(month);
+        dest.writeInt(year);
+        dest.writeString(owner);
+        dest.writeString(title);
+        dest.writeString(location);
+        dest.writeString(date);
+        dest.writeString(startTime);
+        dest.writeString(endTime);
+        dest.writeString(duration);
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "eventID=" + eventID +
+                ", calendarID=" + calendarID +
+                ", day=" + day +
+                ", month=" + month +
+                ", year=" + year +
+                ", owner='" + owner + '\'' +
+                ", title='" + title + '\'' +
+                ", location='" + location + '\'' +
+                ", date='" + date + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", duration='" + duration + '\'' +
+                '}';
+    }
+
+    public String[] toStringArray() {
+        return new String[] {String.valueOf(eventID), String.valueOf(calendarID), String.valueOf(day),
+                String.valueOf(month), String.valueOf(year),
+                owner, title, location, date, startTime, endTime, duration};
+
+    }
+
+    public int getMonth() {
 		return month;
 	}
 

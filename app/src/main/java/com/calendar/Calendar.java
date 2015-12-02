@@ -1,19 +1,20 @@
 package com.calendar;
 import android.database.Cursor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Calendar {
 
-	private Event[] events;
+    private final int MAX_DAILY_EVENTS = 100;
+	private ArrayList<Event> events;
 	private long calendarID;
 	private String owner;
 	
 	public Calendar()
 	{
 		calendarID = -1;
-		events = new Event[100000];
-		Arrays.fill(events, null);
+		events = new ArrayList<>();
 	}
 
 	/*Constructor that takes a cursor filled with event information*/
@@ -24,41 +25,27 @@ public class Calendar {
 	}
 	public boolean addEvent(Event newEvent)
 	{
-		for(int i = 0; i < 100000; ++i)
-		{
-			if(events[i] == null)
-			{
-				events[i] = newEvent;
-				return true;
-			}
-		}
+		events.add(newEvent);
 		return false;
 	}
 	public Event getEvent(long eventID)
 	{
-		for(int i = 0; i < 100000; ++i)
-		{
-			if(events[i].getEventID() == eventID)
-			{
-				return events[i];
-			}
-		}
+        for(Event e : events)
+        {
+            if(e.getEventID() == eventID)
+                return e;
+        }
 		return new Event(-1);
 	}
-
-	public Event getEvent(int day, int month, int year)
+	public ArrayList<Event> getEvents(int day, int month, int year)
 	{
-		for(int i = 0; i < 100000; ++i)
-		{
-			if(events[i] != null)
-			{
-				if(events[i].getDay() == day && events[i].getMonth() == month && events[i].getYear() == year)
-				{
-					return events[i];
-				}
-			}
-		}
-		return new Event(-1);
+		ArrayList<Event> eventList = new ArrayList<>();
+        for(Event e : events)
+        {
+            if(e.getDay() == day && e.getMonth() == month && e.getYear() == year)
+                eventList.add(e);
+        }
+		return eventList;
 	}
 	/**
 	 * @return the calendarID

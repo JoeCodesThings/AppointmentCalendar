@@ -61,14 +61,14 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
             for (Event e : adapter) {
                 temp.add(e.getTitle());
             }
-            row_text = temp.toArray(new String[15]);
+            String[] tempRows = new String[temp.size()];
+            row_text = temp.toArray(tempRows);
         }
         else
         {
             makeText(getActivity(), "FAILED TO ATTACH FRAGMENT", LENGTH_SHORT).show();
         }
         setListAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, row_text));
-
         try
         {
             activityCallback = (EventFragmentListener) activity;

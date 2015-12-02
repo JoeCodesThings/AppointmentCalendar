@@ -84,7 +84,6 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
             ft.addToBackStack("EVENT_FRAG_TAG");
             ft.replace(eventFragContainer.getId(), frag, "EVENT_FRAG_TAG").commit();
         }
-
         fm.executePendingTransactions();
     }
 
@@ -108,7 +107,7 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
             today.setLocation("My House");
             today.setStartTime("1pm");
             today.setEndTime("2pm");
-            today.setTitle("WOOHOO");
+            today.setTitle("Event: " + i);
 
             dbAdapter.addEvent(today);
             ourCalendar.addEvent(today);

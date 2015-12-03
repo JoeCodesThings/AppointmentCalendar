@@ -19,13 +19,33 @@ public class Event implements Parcelable{
 
 	public Event()
 	{
-		eventID = -1;
-		calendarID = -1;
+		this.eventID = -1;
+		this.calendarID = -1;
+		this.day = -1;
+		this.month = -1;
+		this.year = -1;
+		this.owner = "";
+		this.title = "";
+		this.location = "";
+		this.date = "";
+		this.startTime = "";
+		this.endTime = "";
+		this.duration = "";
 	}
 	public Event(long newEventID)
 	{
 		this.eventID = newEventID;
 		calendarID = -1;
+		this.day = -1;
+		this.month = -1;
+		this.year = -1;
+		this.owner = "";
+		this.title = "";
+		this.location = "";
+		this.date = "";
+		this.startTime = "";
+		this.endTime = "";
+		this.duration = "";
 	}
 	public Event(int newDay, int newMonth, int newYear)
 	{
@@ -34,6 +54,13 @@ public class Event implements Parcelable{
 		this.day = newDay;
 		this.month = newMonth;
 		this.year = newYear;
+		this.owner = "";
+		this.title = "";
+		this.location = "";
+		this.date = "";
+		this.startTime = "";
+		this.endTime = "";
+		this.duration = "";
 	}
 	/*Constructor that takes a cursor filled with event information*/
 	public Event(Cursor c)

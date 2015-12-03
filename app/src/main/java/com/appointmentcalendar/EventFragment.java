@@ -1,5 +1,8 @@
 package com.appointmentcalendar;
 import android.app.Activity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.calendar.Event;
@@ -37,7 +41,16 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        activityCallback.onListItemClick(l, v, position, id);
+            LinearLayout eventFragContainer = (LinearLayout)getActivity().findViewById(R.id.FragmentContainer2);
+            eventFragContainer.setId(R.id.FragmentContainer2);
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentTransaction ft;
+            ft = fm.beginTransaction();
+            Fragment frag = EventDetailsFragment.newInstance(adapter);
+            ft.addToBackStack("EVENT_FRAG_TAG");
+            ft.replace(eventFragContainer.getId(), frag, "EVENT_DETAILS_FRAG_TAG").commit();
+            fm.executePendingTransactions();
+            //activityCallback.onListItemClick(l, v, position, id);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
@@ -53,6 +66,7 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
+
         Bundle b = this.getArguments();
         if(b != null)
         {
@@ -66,16 +80,9 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
         }
         else
         {
+            row_text = new String[]{"NULL"};
             makeText(getActivity(), "FAILED TO ATTACH FRAGMENT", LENGTH_SHORT).show();
         }
         setListAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, row_text));
-        try
-        {
-            activityCallback = (EventFragmentListener) activity;
-        }
-        catch (ClassCastException e)
-        {
-            throw new ClassCastException(activity.toString() + " must implement ToolbarListener");
-        }
     }
 }

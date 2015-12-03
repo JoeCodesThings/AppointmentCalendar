@@ -46,4 +46,22 @@ public class CalendarAdapter {
     {
         return true;
     }
+    public boolean syncCalendars(int calendarID, Cursor c)
+    {
+        c.moveToFirst();
+        // ASSUMPTIONS: Cursor points to a valid database
+        Calendar chosen = getCalendar(calendarID);
+
+        //chosen.clearEvents();
+        while(!c.isAfterLast()) {
+            if(chosen.getCalendarID() == c.getLong(c.getColumnIndexOrThrow("_calendarID")))
+            {
+                Event newEvent = new Event(c);
+                chosen.addEvent(newEvent);
+            }
+            c.moveToNext();
+        }
+
+        return true;
+    }
 }

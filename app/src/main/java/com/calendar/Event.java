@@ -145,9 +145,7 @@ public class Event implements Parcelable{
     }
 
     public String[] toStringArray() {
-        return new String[] {String.valueOf(eventID), String.valueOf(calendarID), String.valueOf(day),
-                String.valueOf(month), String.valueOf(year),
-                owner, title, location, date, startTime, endTime, duration};
+        return new String[] {owner, title, location, date, startTime, endTime, duration};
 
     }
 

@@ -1,11 +1,14 @@
 package com.appointmentcalendar;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -87,6 +90,23 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
         fm.executePendingTransactions();
     }
 
+    public void syncData(int calendarID) {
+        //Begin database -> calendar sync
+        calAdapter.syncCalendars(calendarID, dbAdapter.getEventCursor());
+
+        //Begin calendar -> database sync
+
+        //ASSUMPTIONS: terminates whenever EventID becomes -1.
+        Calendar chosen = calAdapter.getCalendar(calendarID);
+        int i = 1;
+        Event newEvent = chosen.getEvent(i);
+        while(newEvent.getEventID() != -1)
+        {
+            dbAdapter.addEvent(newEvent);
+            ++i;
+            newEvent = chosen.getEvent(i);
+        }
+    }
     public void setTestData(){
         dbAdapter.open();
 
@@ -112,7 +132,40 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
             dbAdapter.addEvent(today);
             ourCalendar.addEvent(today);
         }
+        for(int i = 1; i < 30; ++i)
+        {
+            today = new Event(i+30);
+            today.setDay(i);
+            today.setMonth(12);
+            today.setYear(2015);
+            today.setCalendarID(0);
+            today.setOwner("Mark");
+            today.setDuration("1 hour");
+            today.setLocation("My House");
+            today.setStartTime("1pm");
+            today.setEndTime("2pm");
+            today.setTitle("Event: " + (i+30));
 
+            dbAdapter.addEvent(today);
+            ourCalendar.addEvent(today);
+        }
+        for(int i = 1; i < 30; ++i)
+        {
+            today = new Event(i+60);
+            today.setDay(i);
+            today.setMonth(12);
+            today.setYear(2015);
+            today.setCalendarID(0);
+            today.setOwner("Mark");
+            today.setDuration("1 hour");
+            today.setLocation("My House");
+            today.setStartTime("1pm");
+            today.setEndTime("2pm");
+            today.setTitle("Event: " + (i+60));
+
+            dbAdapter.addEvent(today);
+            ourCalendar.addEvent(today);
+        }
         calAdapter.setCalendar(ourCalendar);
         dbAdapter.addCalendar(ourCalendar);
 

@@ -61,9 +61,7 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-    }
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {}
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {

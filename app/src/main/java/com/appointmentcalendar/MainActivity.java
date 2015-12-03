@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CalendarView;
 import android.widget.LinearLayout;
@@ -20,15 +22,19 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static android.widget.Toast.*;
+import com.tools.DateFormat;
 
-public class MainActivity extends ActionBarActivity implements Serializable, CalendarFragment.CalendarFragmentListener, EventFragment.EventFragmentListener, EventEditFragment.EventEditFragmentListener {
+public class MainActivity extends ActionBarActivity implements Serializable,
+                                                    CalendarFragment.CalendarFragmentListener,
+                                                    EventFragment.EventFragmentListener,
+                                                    EventEditFragment.EventEditFragmentListener,
+                                                    EventAddFragment.EventAddFragmentListener{
 
     private CalendarView calendarFragmentView;
     private DatabaseAdapter dbAdapter;
     private CalendarAdapter calAdapter;
     private LinearLayout calendarFragContainer;
     private LinearLayout eventFragContainer;
-    private LinearLayout eventEditFragContainer;
     private Calendar ourCal;
     private ArrayList<Event> dailyEvents;
     private FragmentManager fm;
@@ -62,11 +68,37 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
         makeText(getApplicationContext(), "CLICKED: " + position, LENGTH_SHORT).show();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.add_event:
+                ArrayList<Event> newEvents = new ArrayList<>();
+                Event newEvent = new Event();
+                newEvents.add(newEvent);
+                setAddFragment(newEvents, false);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void eventAdd_addEvent(Event e)
+    {
+        calAdapter.getCalendar(0).addEvent(e);
+        dailyEvents = ourCal.getEvents(e.getDay(), e.getMonth(), e.getYear());
+        makeText(getApplicationContext(), "EVENT ADD SUCCESS", LENGTH_SHORT).show();
+    }
     public void eventEdit_addEvent(Event e)
     {
         calAdapter.getCalendar(0).addEvent(e);
         dailyEvents = ourCal.getEvents(e.getDay(), e.getMonth(), e.getYear());
-        eventEditFragContainer.setVisibility(View.GONE);
         setSecondFragment(dailyEvents, false);
     }
     public void eventEdit_editEvent(ArrayList<Event> events)
@@ -101,12 +133,58 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
         }
         else
         {
-            makeText(getApplicationContext(), dailyEvents.size() + "EVENTS FOUND", LENGTH_SHORT).show();
             setSecondFragment(dailyEvents, true);
         }
     }
     /* End Calendar Fragment Callbacks*/
 
+    //This sets our second fragment with a new fragment.
+    //When deleting an item, do not add the fragment with the deleted item to the back stack
+    private void setAddFragment(ArrayList<Event> dailyList, boolean addToBackStack) {
+        LinearLayout eventFragContainer = (LinearLayout) findViewById(R.id.FragmentContainer2);
+        eventFragContainer.setId(R.id.FragmentContainer2);
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft;
+        ft = fm.beginTransaction();
+        Fragment frag = EventAddFragment.newInstance(dailyList);
+        if (fm.findFragmentByTag("EVENT_FRAG_TAG") == null)
+        {
+            ft.add(eventFragContainer.getId(), frag, "EVENT_FRAG_TAG").commit();
+        }
+        else
+        {
+            if(addToBackStack)
+            {
+                ft.addToBackStack("EVENT_FRAG_TAG");
+            }
+            ft.replace(eventFragContainer.getId(), frag, "EVENT_FRAG_TAG").commit();
+        }
+        fm.executePendingTransactions();
+    }
+
+    //This sets our second fragment with a new fragment.
+    //When deleting an item, do not add the fragment with the deleted item to the back stack
+    private void setEditFragment(ArrayList<Event> dailyList, boolean addToBackStack) {
+        LinearLayout eventFragContainer = (LinearLayout) findViewById(R.id.FragmentContainer2);
+        eventFragContainer.setId(R.id.FragmentContainer2);
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft;
+        ft = fm.beginTransaction();
+        Fragment frag = EventEditFragment.newInstance(dailyList);
+        if (fm.findFragmentByTag("EVENT_FRAG_TAG") == null)
+        {
+            ft.add(eventFragContainer.getId(), frag, "EVENT_FRAG_TAG").commit();
+        }
+        else
+        {
+            if(addToBackStack)
+            {
+                ft.addToBackStack("EVENT_FRAG_TAG");
+            }
+            ft.replace(eventFragContainer.getId(), frag, "EVENT_FRAG_TAG").commit();
+        }
+        fm.executePendingTransactions();
+    }
 
 
     //This sets our second fragment with a new fragment.

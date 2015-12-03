@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import static android.widget.Toast.LENGTH_SHORT;
 import static android.widget.Toast.makeText;
 
-public class EventEditFragment extends Fragment implements View.OnClickListener {
+public class EventAddFragment extends Fragment implements View.OnClickListener {
 
-    private EventEditFragmentListener activityCallback;
+    private EventAddFragmentListener activityCallback;
     private ArrayList<Event> adapter;
     private Event event;
     private static final String TAG = "EVENT_EDIT_FRAG_TAG";
@@ -34,23 +34,22 @@ public class EventEditFragment extends Fragment implements View.OnClickListener 
     EditText eventStartTime;
     EditText eventEndTime;
     EditText eventDuration;
+    EditText eventDay;
+    EditText eventMonth;
+    EditText eventYear;
 
-    public interface EventEditFragmentListener {
-        void eventEdit_addEvent(Event event);
-        void eventEdit_editEvent(ArrayList<Event> event);
+    public interface EventAddFragmentListener {
+        void eventAdd_addEvent(Event event);
     }
 
-    public void eventEdit_addEvent(Event event)
+    public void eventAdd_addEvent(Event event)
     {
-        activityCallback.eventEdit_addEvent(event);
-    }
-    public void eventEdit_editEvent(ArrayList<Event> event)
-    {
-        activityCallback.eventEdit_editEvent(event);
+        activityCallback.eventAdd_addEvent(event);
     }
 
-    public static EventEditFragment newInstance (ArrayList<Event> eventList){
-        EventEditFragment mf = new EventEditFragment();
+
+    public static EventAddFragment newInstance (ArrayList<Event> eventList){
+        EventAddFragment mf = new EventAddFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(TAG, eventList);
         mf.setArguments(bundle);
@@ -70,6 +69,18 @@ public class EventEditFragment extends Fragment implements View.OnClickListener 
             eventOwner.setBackgroundColor(android.graphics.Color.RED);
             correct = false;
         }
+        if (eventDay.getText().length() == 0) {
+            eventDay.setBackgroundColor(android.graphics.Color.RED);
+            correct = false;
+        }
+        if (eventMonth.getText().length() == 0) {
+            eventMonth.setBackgroundColor(android.graphics.Color.RED);
+            correct = false;
+        }
+        if (eventYear.getText().length() == 0) {
+            eventYear.setBackgroundColor(android.graphics.Color.RED);
+            correct = false;
+        }
 
         if(correct)
         {
@@ -79,9 +90,10 @@ public class EventEditFragment extends Fragment implements View.OnClickListener 
             event.setStartTime(eventStartTime.getText().toString());
             event.setEndTime(eventEndTime.getText().toString());
             event.setDuration(eventDuration.getText().toString());
-            ArrayList<Event> stuff = new ArrayList<>();
-            stuff.add(event);
-            eventEdit_editEvent(stuff);
+            event.setDay(Integer.parseInt(eventDay.getText().toString()));
+            event.setMonth(Integer.parseInt(eventMonth.getText().toString()));
+            event.setYear(Integer.parseInt(eventYear.getText().toString()));
+            eventAdd_addEvent(event);
         }
         else
         {
@@ -92,20 +104,16 @@ public class EventEditFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
     {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.event_edit_fragment,container, false);
+        View view = inflater.inflate(R.layout.event_add_fragment,container, false);
         eventTitle = (EditText)view.findViewById(R.id.event_title);
         eventOwner = (EditText)view.findViewById(R.id.event_owner);
         eventLocation = (EditText)view.findViewById(R.id.event_location);
         eventStartTime = (EditText)view.findViewById(R.id.event_start_time);
         eventEndTime = (EditText)view.findViewById(R.id.event_end_time);
         eventDuration = (EditText)view.findViewById(R.id.event_duration);
-
-        eventTitle.setText(event.getTitle());
-        eventOwner.setText(event.getOwner());
-        eventLocation.setText(event.getLocation());
-        eventStartTime.setText(event.getStartTime());
-        eventEndTime.setText(event.getEndTime());
-        eventDuration.setText(event.getDuration());
+        eventDay = (EditText)view.findViewById(R.id.event_day);
+        eventMonth = (EditText)view.findViewById(R.id.event_month);
+        eventYear = (EditText)view.findViewById(R.id.event_year);
 
         Button submitButton = (Button)view.findViewById(R.id.event_button);
         submitButton.setOnClickListener(this);
@@ -131,7 +139,7 @@ public class EventEditFragment extends Fragment implements View.OnClickListener 
 
         try
         {
-            activityCallback = (EventEditFragmentListener) activity;
+            activityCallback = (EventAddFragmentListener) activity;
         }
         catch (ClassCastException e)
         {

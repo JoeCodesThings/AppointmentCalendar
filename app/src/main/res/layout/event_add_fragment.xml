@@ -11,10 +11,10 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/event_edit_tile"
+            android:id="@+id/event_add_tile"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:text="          EDIT EVENT          "
+            android:text="          ADD EVENT          "
             android:textAlignment="center"
             android:layout_weight="0.3"
             android:textColor="@color/darkblue"
@@ -30,6 +30,30 @@
             android:inputType="textPersonName"
             android:layout_marginTop="4dp"
             android:hint="Owner" />
+
+        <EditText
+            android:id="@+id/event_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:layout_marginTop="4dp"
+            android:hint="Day" />
+
+        <EditText
+            android:id="@+id/event_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:layout_marginTop="4dp"
+            android:hint="Month" />
+
+        <EditText
+            android:id="@+id/event_year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:layout_marginTop="4dp"
+            android:hint="Year" />
 
         <EditText
             android:id="@+id/event_title"

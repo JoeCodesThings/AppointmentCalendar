@@ -1,14 +1,11 @@
 package com.appointmentcalendar;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -18,17 +15,19 @@ import com.calendar.Event;
 import com.database.DatabaseAdapter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static android.widget.Toast.*;
 
-public class MainActivity extends ActionBarActivity implements Serializable, CalendarFragment.CalendarFragmentListener, EventFragment.EventFragmentListener, EventDetailsFragment.EventDetailsFragmentListener {
+public class MainActivity extends ActionBarActivity implements Serializable, CalendarFragment.CalendarFragmentListener, EventFragment.EventFragmentListener {
 
     CalendarView calendarFragmentView;
     DatabaseAdapter dbAdapter;
     CalendarAdapter calAdapter;
     LinearLayout calendarFragContainer;
     LinearLayout eventFragContainer;
-
+    Calendar ourCal;
+    ArrayList<Event> dailyEvents;
     FragmentManager fm;
     FragmentTransaction ft;
 
@@ -49,6 +48,9 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
 
         calAdapter = new CalendarAdapter();
         dbAdapter = new DatabaseAdapter(getApplicationContext());
+        dailyEvents = new ArrayList<>();
+        ourCal = new Calendar();
+
         setTestData();
     }
 
@@ -57,12 +59,18 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
         makeText(getApplicationContext(), "CLICKED: " + position, LENGTH_SHORT).show();
     }
 
+    public void deleteEvents(ArrayList<Event> events)
+    {
+        for (Event e : events){
+            calAdapter.getCalendar(0).deleteEvent(e.getEventID());
+            dailyEvents = ourCal.getEvents(e.getDay(), e.getMonth(), e.getYear());
+        }
+        setSecondFragment(dailyEvents);
+    }
 
     public void onSelectedDayChange(CalendarView view, int year, int month, int day)
     {
-        Calendar cal = calAdapter.getCalendar(0);
-        ArrayList<Event> dailyEvents = cal.getEvents(day, month + 1, year);
-
+        dailyEvents = ourCal.getEvents(day, month + 1, year);
         if (dailyEvents.size() == 0)
         {
             makeText(getApplicationContext(), "NO EVENTS FOUND", LENGTH_SHORT).show();
@@ -107,18 +115,22 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
             newEvent = chosen.getEvent(i);
         }
     }
-    public void setTestData(){
-        dbAdapter.open();
 
-        Calendar ourCalendar = new Calendar();
-        ourCalendar.setCalendarID(0);
-        ourCalendar.setOwner("Mark");
+
+    /*The following code is to let me get random Event ID's*/
+
+
+    public void setTestData(){
+        Random rnd = new Random();
+        dbAdapter.open();
+        ourCal.setCalendarID(0);
+        ourCal.setOwner("Mark");
         Event today;
 
-        for(int i = 1; i < 30; ++i)
+        for(int i = 1; i < 90; ++i)
         {
             today = new Event(i);
-            today.setDay(i);
+            today.setDay((i%30));
             today.setMonth(12);
             today.setYear(2015);
             today.setCalendarID(0);
@@ -127,47 +139,15 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
             today.setLocation("My House");
             today.setStartTime("1pm");
             today.setEndTime("2pm");
-            today.setTitle("Event: " + i);
+            today.setTitle("Event: " + rnd.nextInt(100));
 
             dbAdapter.addEvent(today);
-            ourCalendar.addEvent(today);
+            ourCal.addEvent(today);
         }
-        for(int i = 1; i < 30; ++i)
-        {
-            today = new Event(i+30);
-            today.setDay(i);
-            today.setMonth(12);
-            today.setYear(2015);
-            today.setCalendarID(0);
-            today.setOwner("Mark");
-            today.setDuration("1 hour");
-            today.setLocation("My House");
-            today.setStartTime("1pm");
-            today.setEndTime("2pm");
-            today.setTitle("Event: " + (i+30));
 
-            dbAdapter.addEvent(today);
-            ourCalendar.addEvent(today);
-        }
-        for(int i = 1; i < 30; ++i)
-        {
-            today = new Event(i+60);
-            today.setDay(i);
-            today.setMonth(12);
-            today.setYear(2015);
-            today.setCalendarID(0);
-            today.setOwner("Mark");
-            today.setDuration("1 hour");
-            today.setLocation("My House");
-            today.setStartTime("1pm");
-            today.setEndTime("2pm");
-            today.setTitle("Event: " + (i+60));
 
-            dbAdapter.addEvent(today);
-            ourCalendar.addEvent(today);
-        }
-        calAdapter.setCalendar(ourCalendar);
-        dbAdapter.addCalendar(ourCalendar);
+        calAdapter.setCalendar(ourCal);
+        dbAdapter.addCalendar(ourCal);
 
         dbAdapter.refresh();
     }

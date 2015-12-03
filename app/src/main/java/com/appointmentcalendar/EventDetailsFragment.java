@@ -22,10 +22,6 @@ public class EventDetailsFragment extends ListFragment implements AdapterView.On
     private static final String TAG = "EVENT_DETAILS_FRAG_TAG";
     private String[] row_text;
 
-    public interface EventDetailsFragmentListener {
-        void onListItemClick(ListView l, View view, int position, long id);
-    }
-
     public static EventDetailsFragment newInstance(ArrayList<Event> eventList){
         EventDetailsFragment mf = new EventDetailsFragment();
         Bundle bundle = new Bundle();

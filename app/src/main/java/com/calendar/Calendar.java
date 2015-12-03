@@ -37,6 +37,18 @@ public class Calendar {
         }
 		return new Event(-1);
 	}
+	public boolean deleteEvent(long eventID)
+	{
+		for(Event e : events)
+		{
+			if(e.getEventID() == eventID)
+			{
+				events.remove(e);
+				return true;
+			}
+		}
+		return false;
+	}
 	public ArrayList<Event> getEvents(int day, int month, int year)
 	{
 		ArrayList<Event> eventList = new ArrayList<>();

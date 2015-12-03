@@ -32,9 +32,13 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
     private String[] row_text;
 
     public interface EventFragmentListener {
-        void onListItemClick(ListView l, View view, int position, long id);
+        void deleteEvents(ArrayList<Event> event);
     }
 
+    public void deleteEvents(ArrayList<Event> event)
+    {
+        activityCallback.deleteEvents(event);
+    }
     public static EventFragment newInstance(ArrayList<Event> eventList){
         EventFragment mf = new EventFragment();
         Bundle bundle = new Bundle();
@@ -48,16 +52,7 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
     public void onListItemClick(ListView l, View v, int position, long id) {
         ArrayList<Event> temp = new ArrayList<>();
         temp.add((adapter.get(position)));
-        LinearLayout eventFragContainer = (LinearLayout)getActivity().findViewById(R.id.FragmentContainer2);
-        eventFragContainer.setId(R.id.FragmentContainer2);
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        FragmentTransaction ft;
-        ft = fm.beginTransaction();
-        Fragment frag = EventDetailsFragment.newInstance(temp);
-        ft.addToBackStack("EVENT_FRAG_TAG");
-        ft.replace(eventFragContainer.getId(), frag, "EVENT_DETAILS_FRAG_TAG").commit();
-        fm.executePendingTransactions();
-        //activityCallback.onListItemClick(l, v, position, id);
+        setSecondFragment(temp);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
@@ -66,7 +61,7 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
     }
 
@@ -80,19 +75,36 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        ArrayList<Event> temp = new ArrayList<>();
+
         switch(item.getItemId()) {
-            case R.id.add:
+            case R.id.share:
                 // add stuff here
                 return true;
             case R.id.edit:
                 // edit stuff here
                 return true;
             case R.id.delete:
+                temp.add((adapter.get(info.position)));
+                deleteEvents(temp);
                 // remove stuff here
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    private void setSecondFragment(ArrayList<Event> dailyList) {
+
+        LinearLayout eventFragContainer = (LinearLayout)getActivity().findViewById(R.id.FragmentContainer2);
+        eventFragContainer.setId(R.id.FragmentContainer2);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft;
+        ft = fm.beginTransaction();
+        Fragment frag = EventDetailsFragment.newInstance(dailyList);
+        ft.addToBackStack("EVENT_FRAG_TAG");
+        ft.replace(eventFragContainer.getId(), frag, "EVENT_DETAILS_FRAG_TAG").commit();
+        fm.executePendingTransactions();
     }
 
     @Override
@@ -127,5 +139,13 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
             makeText(getActivity(), "FAILED TO ATTACH FRAGMENT", LENGTH_SHORT).show();
         }
         setListAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, row_text));
+        try
+        {
+            activityCallback = (EventFragmentListener) activity;
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(activity.toString() + " must implement ToolbarListener");
+        }
     }
 }

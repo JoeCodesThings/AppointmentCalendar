@@ -2,7 +2,7 @@
     <string name="app_name">AppointmentCalendar</string>
     <string name="action_settings">Settings</string>
     <string name="eventButton">Find Event</string>
-    <string name="menu_add">Add Event</string>
+    <string name="menu_share">Share Event</string>
     <string name="menu_edit">Edit Event</string>
     <string name="menu_delete">Delete Event</string>
 </resources>

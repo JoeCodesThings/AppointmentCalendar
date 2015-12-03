@@ -1,10 +1,12 @@
 package com.appointmentcalendar;
 import android.app.Activity;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -56,9 +58,25 @@ public class EventAddFragment extends Fragment implements View.OnClickListener {
         return mf;
     }
 
+    public static void hideKeyboard(Context ctx) {
+        InputMethodManager inputManager = (InputMethodManager) ctx
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // check if no view has focus:
+        View v = ((Activity) ctx).getCurrentFocus();
+        if (v == null)
+            return;
+
+        inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
     @Override
     public void onClick(View v) {
         boolean correct = true;
+
+        int dayCheck = Integer.parseInt(eventDay.getText().toString());
+        int monthCheck = Integer.parseInt(eventMonth.getText().toString());
+        int yearCheck = Integer.parseInt(eventYear.getText().toString());
 
         if(eventTitle.getText().length() == 0)
         {
@@ -69,17 +87,20 @@ public class EventAddFragment extends Fragment implements View.OnClickListener {
             eventOwner.setBackgroundColor(android.graphics.Color.RED);
             correct = false;
         }
-        if (eventDay.getText().length() == 0) {
-            eventDay.setBackgroundColor(android.graphics.Color.RED);
-            correct = false;
+        if ( (eventDay.getText().length() == 0) || (dayCheck <= 0 || dayCheck > 30) )
+        {
+                eventDay.setBackgroundColor(android.graphics.Color.RED);
+                correct = false;
         }
-        if (eventMonth.getText().length() == 0) {
-            eventMonth.setBackgroundColor(android.graphics.Color.RED);
-            correct = false;
+        if( (eventMonth.getText().length() == 0) || (monthCheck < 1 || monthCheck > 12) )
+        {
+                eventMonth.setBackgroundColor(android.graphics.Color.RED);
+                correct = false;
         }
-        if (eventYear.getText().length() == 0) {
-            eventYear.setBackgroundColor(android.graphics.Color.RED);
-            correct = false;
+        if( (eventYear.getText().length() == 0) || (yearCheck <= 2015 || yearCheck > 3000) )
+        {
+                eventYear.setBackgroundColor(android.graphics.Color.RED);
+                correct = false;
         }
 
         if(correct)
@@ -93,6 +114,7 @@ public class EventAddFragment extends Fragment implements View.OnClickListener {
             event.setDay(Integer.parseInt(eventDay.getText().toString()));
             event.setMonth(Integer.parseInt(eventMonth.getText().toString()));
             event.setYear(Integer.parseInt(eventYear.getText().toString()));
+            hideKeyboard(getActivity());
             eventAdd_addEvent(event);
         }
         else

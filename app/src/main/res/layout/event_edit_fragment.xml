@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/event_edit_tile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ADD / EDIT EVENT"
+        android:textAlignment="center"
+        android:layout_weight="0.3"
+        android:textColor="@color/darkblue"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:textStyle="bold|italic"
+        android:typeface="serif"
+        android:singleLine="false" />
+
+    <EditText
+        android:id="@+id/event_owner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:layout_marginTop="4dp"
+        android:hint="Owner"
+        android:editable="true" />
+    <EditText
+        android:id="@+id/event_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textShortMessage"
+        android:layout_marginTop="4dp"
+        android:hint="Title"
+        android:editable="true" />
+
+    <EditText
+        android:id="@+id/event_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textShortMessage"
+        android:layout_marginTop="4dp"
+        android:hint="Location"
+        android:editable="true" />
+
+    <EditText
+        android:id="@+id/event_start_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:inputType="time"
+        android:hint="Start Time"
+        android:editable="true" />
+
+    <EditText
+        android:id="@+id/event_end_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:inputType="time"
+        android:hint="End Time"
+        android:editable="true" />
+
+    <EditText
+        android:id="@+id/event_duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:inputType="text"
+        android:hint="Duration"
+        android:editable="true" />
+
+    <Button
+        android:id="@+id/event_button"
+        android:layout_marginTop="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:clickable="false" />
+</LinearLayout>

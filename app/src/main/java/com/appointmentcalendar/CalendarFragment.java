@@ -17,11 +17,11 @@ import com.database.DatabaseAdapter;
 
 public class CalendarFragment extends Fragment implements CalendarView.OnDateChangeListener {
 
-    CalendarFragmentListener activityCallback;
+        CalendarFragmentListener activityCallback;
 
-    public interface CalendarFragmentListener {
-        void onSelectedDayChange(CalendarView view, int year, int month, int day);
-    }
+public interface CalendarFragmentListener {
+    void onSelectedDayChange(CalendarView view, int year, int month, int day);
+}
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {

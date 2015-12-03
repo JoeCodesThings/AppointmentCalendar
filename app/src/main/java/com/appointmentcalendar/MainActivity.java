@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.CalendarView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+
 import com.calendar.Calendar;
 import com.calendar.CalendarAdapter;
 import com.calendar.Event;
@@ -19,17 +21,18 @@ import java.util.Random;
 
 import static android.widget.Toast.*;
 
-public class MainActivity extends ActionBarActivity implements Serializable, CalendarFragment.CalendarFragmentListener, EventFragment.EventFragmentListener {
+public class MainActivity extends ActionBarActivity implements Serializable, CalendarFragment.CalendarFragmentListener, EventFragment.EventFragmentListener, EventEditFragment.EventEditFragmentListener {
 
-    CalendarView calendarFragmentView;
-    DatabaseAdapter dbAdapter;
-    CalendarAdapter calAdapter;
-    LinearLayout calendarFragContainer;
-    LinearLayout eventFragContainer;
-    Calendar ourCal;
-    ArrayList<Event> dailyEvents;
-    FragmentManager fm;
-    FragmentTransaction ft;
+    private CalendarView calendarFragmentView;
+    private DatabaseAdapter dbAdapter;
+    private CalendarAdapter calAdapter;
+    private LinearLayout calendarFragContainer;
+    private LinearLayout eventFragContainer;
+    private LinearLayout eventEditFragContainer;
+    private Calendar ourCal;
+    private ArrayList<Event> dailyEvents;
+    private FragmentManager fm;
+    private FragmentTransaction ft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +62,36 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
         makeText(getApplicationContext(), "CLICKED: " + position, LENGTH_SHORT).show();
     }
 
+    public void eventEdit_addEvent(Event e)
+    {
+        calAdapter.getCalendar(0).addEvent(e);
+        dailyEvents = ourCal.getEvents(e.getDay(), e.getMonth(), e.getYear());
+        eventEditFragContainer.setVisibility(View.GONE);
+        setSecondFragment(dailyEvents, false);
+    }
+    public void eventEdit_editEvent(ArrayList<Event> events)
+    {
+        Event e = events.get(0);
+        calAdapter.getCalendar(0).deleteEvent(e.getEventID());
+        calAdapter.getCalendar(0).addEvent(e);
+        dailyEvents = ourCal.getEvents(e.getDay(), e.getMonth(), e.getYear());
+        setSecondFragment(dailyEvents, false);
+    }
+
+
+
+    /* Start Event Fragment Callbacks*/
     public void deleteEvents(ArrayList<Event> events)
     {
         for (Event e : events){
             calAdapter.getCalendar(0).deleteEvent(e.getEventID());
             dailyEvents = ourCal.getEvents(e.getDay(), e.getMonth(), e.getYear());
         }
-        setSecondFragment(dailyEvents);
+        setSecondFragment(dailyEvents, false);
     }
+    /* End Event Fragment Callbacks*/
 
+    /* Start Calendar Fragment Callbacks*/
     public void onSelectedDayChange(CalendarView view, int year, int month, int day)
     {
         dailyEvents = ourCal.getEvents(day, month + 1, year);
@@ -78,11 +102,16 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
         else
         {
             makeText(getApplicationContext(), dailyEvents.size() + "EVENTS FOUND", LENGTH_SHORT).show();
-            setSecondFragment(dailyEvents);
+            setSecondFragment(dailyEvents, true);
         }
     }
+    /* End Calendar Fragment Callbacks*/
 
-    private void setSecondFragment(ArrayList<Event> dailyList) {
+
+
+    //This sets our second fragment with a new fragment.
+    //When deleting an item, do not add the fragment with the deleted item to the back stack
+    private void setSecondFragment(ArrayList<Event> dailyList, boolean addToBackStack) {
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
         Fragment frag = EventFragment.newInstance(dailyList);
@@ -92,7 +121,10 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
         }
         else
         {
-            ft.addToBackStack("EVENT_FRAG_TAG");
+            if(addToBackStack)
+            {
+                ft.addToBackStack("EVENT_FRAG_TAG");
+            }
             ft.replace(eventFragContainer.getId(), frag, "EVENT_FRAG_TAG").commit();
         }
         fm.executePendingTransactions();
@@ -115,10 +147,6 @@ public class MainActivity extends ActionBarActivity implements Serializable, Cal
             newEvent = chosen.getEvent(i);
         }
     }
-
-
-    /*The following code is to let me get random Event ID's*/
-
 
     public void setTestData(){
         Random rnd = new Random();

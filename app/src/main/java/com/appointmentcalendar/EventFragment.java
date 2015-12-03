@@ -39,6 +39,7 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
     {
         activityCallback.deleteEvents(event);
     }
+
     public static EventFragment newInstance(ArrayList<Event> eventList){
         EventFragment mf = new EventFragment();
         Bundle bundle = new Bundle();
@@ -47,12 +48,11 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
         return mf;
     }
 
-
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         ArrayList<Event> temp = new ArrayList<>();
         temp.add((adapter.get(position)));
-        setSecondFragment(temp);
+        setSecondFragment(temp, true);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
@@ -82,27 +82,53 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
                 // add stuff here
                 return true;
             case R.id.edit:
-                // edit stuff here
+                temp.add((adapter.get(info.position)));
+                setEditFragment(temp, false);
                 return true;
             case R.id.delete:
                 temp.add((adapter.get(info.position)));
                 deleteEvents(temp);
-                // remove stuff here
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
     }
 
-    private void setSecondFragment(ArrayList<Event> dailyList) {
+    //This sets our second fragment with a new fragment.
+    //When deleting an item, do not add the fragment with the deleted item to the back stack
+    private void setEditFragment(ArrayList<Event> dailyList, boolean addToBackStack) {
+        LinearLayout eventFragContainer = (LinearLayout) getActivity().findViewById(R.id.FragmentContainer2);
+        eventFragContainer.setId(R.id.FragmentContainer2);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft;
+        ft = fm.beginTransaction();
+        Fragment frag = EventEditFragment.newInstance(dailyList);
+        if (fm.findFragmentByTag("EVENT_FRAG_TAG") == null)
+        {
+            ft.add(eventFragContainer.getId(), frag, "EVENT_FRAG_TAG").commit();
+        }
+        else
+        {
+            if(addToBackStack)
+            {
+                ft.addToBackStack("EVENT_FRAG_TAG");
+            }
+            ft.replace(eventFragContainer.getId(), frag, "EVENT_FRAG_TAG").commit();
+        }
+        fm.executePendingTransactions();
+    }
 
-        LinearLayout eventFragContainer = (LinearLayout)getActivity().findViewById(R.id.FragmentContainer2);
+    private void setSecondFragment(ArrayList<Event> dailyList, boolean addToBackStack) {
+        LinearLayout eventFragContainer = (LinearLayout) getActivity().findViewById(R.id.FragmentContainer2);
         eventFragContainer.setId(R.id.FragmentContainer2);
         FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft;
         ft = fm.beginTransaction();
         Fragment frag = EventDetailsFragment.newInstance(dailyList);
-        ft.addToBackStack("EVENT_FRAG_TAG");
+        if(addToBackStack)
+        {
+            ft.addToBackStack("EVENT_FRAG_TAG");
+        }
         ft.replace(eventFragContainer.getId(), frag, "EVENT_DETAILS_FRAG_TAG").commit();
         fm.executePendingTransactions();
     }
@@ -111,7 +137,6 @@ public class EventFragment extends ListFragment implements AdapterView.OnItemCli
     public void onActivityCreated(Bundle savedInstanceState) {
 
         registerForContextMenu(getListView());
-
         super.onActivityCreated(savedInstanceState);
 
     }

@@ -30,7 +30,8 @@
         android:layout_height="0px"
         android:layout_weight=".58"
         android:orientation="vertical"
-        android:layout_gravity="center|bottom">
+        android:layout_gravity="center|bottom"
+        android:longClickable="false">
 
     </LinearLayout>
 

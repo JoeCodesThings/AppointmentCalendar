@@ -74,9 +74,21 @@ public class EventAddFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         boolean correct = true;
 
-        int dayCheck = Integer.parseInt(eventDay.getText().toString());
-        int monthCheck = Integer.parseInt(eventMonth.getText().toString());
-        int yearCheck = Integer.parseInt(eventYear.getText().toString());
+        int dayCheck = -1;
+        int monthCheck = -1;
+        int yearCheck = -1;
+        if ((eventDay.getText().length() == 0)
+                || (eventMonth.getText().length() == 0)
+                || (eventYear.getText().length() == 0)) {
+            eventDay.setBackgroundColor(android.graphics.Color.RED);
+            eventMonth.setBackgroundColor(android.graphics.Color.RED);
+            eventYear.setBackgroundColor(android.graphics.Color.RED);
+            correct = false;
+        } else {
+            dayCheck = Integer.parseInt(eventDay.getText().toString());
+            monthCheck = Integer.parseInt(eventMonth.getText().toString());
+            yearCheck = Integer.parseInt(eventYear.getText().toString());
+        }
 
         if(eventTitle.getText().length() == 0)
         {
@@ -87,20 +99,20 @@ public class EventAddFragment extends Fragment implements View.OnClickListener {
             eventOwner.setBackgroundColor(android.graphics.Color.RED);
             correct = false;
         }
-        if ( (eventDay.getText().length() == 0) || (dayCheck <= 0 || dayCheck > 30) )
+        if (dayCheck <= 0 || dayCheck > 30)
         {
-                eventDay.setBackgroundColor(android.graphics.Color.RED);
-                correct = false;
+            eventDay.setBackgroundColor(android.graphics.Color.RED);
+            correct = false;
         }
-        if( (eventMonth.getText().length() == 0) || (monthCheck < 1 || monthCheck > 12) )
+        if (monthCheck < 1 || monthCheck > 12)
         {
-                eventMonth.setBackgroundColor(android.graphics.Color.RED);
-                correct = false;
+            eventMonth.setBackgroundColor(android.graphics.Color.RED);
+            correct = false;
         }
-        if( (eventYear.getText().length() == 0) || (yearCheck <= 2015 || yearCheck > 3000) )
+        if (yearCheck < 2015 || yearCheck > 3000)
         {
-                eventYear.setBackgroundColor(android.graphics.Color.RED);
-                correct = false;
+            eventYear.setBackgroundColor(android.graphics.Color.RED);
+            correct = false;
         }
 
         if(correct)
